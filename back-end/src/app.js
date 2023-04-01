@@ -3,7 +3,7 @@ const app = express();
 const ejs = require('ejs');
 const db = require('./config/database');
 const bodyParser = require('body-parser');
-const port = 3000;
+const port = 3003;
 
 // Parse incoming requests with JSON payloads
 app.use(bodyParser.json());
@@ -46,6 +46,14 @@ app.post('/chooseDataTable', (req, res) => {
     res.render('table/addChaineHotel');
   } else if (table === 'chambre'){
     res.render('table/addChambre');
+
+    // Handle error for unknown table
+  }else if (table === 'client'){
+    res.render('table/addClient');
+
+    // Handle error for unknown table
+  }else if (table === 'employe'){
+    res.render('table/addEmployee');
 
     // Handle error for unknown table
   }
@@ -93,6 +101,28 @@ app.post('/addChambre', (req, res) => {
     .catch((error) => {
       console.error(error);
       res.status(500).send('Error adding room!');
+    });
+});
+app.post('/addClient', (req, res) => {
+  const { id_client, nom_complet, nas, adresse, tel, date_enregistrement, id_hotel } = req.body;
+  db.query(`INSERT INTO client( id_client, nom_complet, nas, adresse, tel, date_enregistrement, id_hotel) VALUES ($1, $2, $3, $4, $5, $6 ,$7)`, [id_client, nom_complet, nas, adresse, tel, date_enregistrement, id_hotel])
+    .then(() => {
+      res.send('Client added successfully!');
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error adding client!');
+    });
+});
+app.post('/addEmployee', (req, res) => {
+  const { id_employe, nom_complet, adresse, nas, role, id_hotel } = req.body;
+  db.query(`INSERT INTO client( id_employe, nom_complet, adresse, nas, role, id_hotel) VALUES ($1, $2, $3, $4, $5, $6)`, [id_employe, nom_complet, adresse, nas, role, id_hotel])
+    .then(() => {
+      res.send('Client added successfully!');
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error adding client!');
     });
 });
 
