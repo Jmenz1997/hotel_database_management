@@ -49,7 +49,12 @@ app.post('/chooseDataTable', (req, res) => {
 
     // Handle error for unknown table
   }else if (table === 'client'){
-    res.render('table/addClient');
+    if (operation === "add"){
+      res.render('table/addClient');
+    }if (operation === "delete"){
+      res.render('table/deleteClient');
+    }
+    
 
     // Handle error for unknown table
   }else if (table === 'employe'){
@@ -108,6 +113,17 @@ app.post('/addClient', (req, res) => {
   db.query(`INSERT INTO client( id_client, nom_complet, nas, adresse, tel, date_enregistrement, id_hotel) VALUES ($1, $2, $3, $4, $5, $6 ,$7)`, [id_client, nom_complet, nas, adresse, tel, date_enregistrement, id_hotel])
     .then(() => {
       res.send('Client added successfully!');
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error adding client!');
+    });
+});
+app.post('/deleteClient', (req, res) => {
+  const { nom_complet} = req.body;
+  db.query('DELETE FROM  client WHERE nom_complet = ? ', [nom_complet])
+    .then(() => {
+      res.send('CLIENT added successfully!');
     })
     .catch((error) => {
       console.error(error);
