@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Employee Page</title>
+  </head>
+  <body>
+    <h1>Database management</h1>
+    <form action="/chooseDataTable" method="POST" onsubmit="return setOperationValue();">
+      <input type="hidden" name="operation" id="operation">
+      <label for="table">Select a table:</label>
+      <select name="table" id="table">
+        <option value="hotel">Hotel</option>
+        <option value="chaine_hotel">Chaine Hotel</option>
+        <option value="chambre">Chambre</option>
+      </select>
+      <br>
+      <button type="submit" onclick="setOperation('add')">Add</button>
+      <button type="submit" onclick="setOperation('delete')">Delete</button>
+    </form>
+
+    <script>
+      let currentOperation;
+
+      function setOperation(operation) {
+        currentOperation = operation;
+      }
+
+      function setOperationValue() {
+        document.getElementById('operation').value = currentOperation;
+        return true;
+      }
+    </script>
+  </body>
+</html>

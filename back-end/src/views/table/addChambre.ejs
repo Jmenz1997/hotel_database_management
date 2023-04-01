@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ajouter Chambre</title>
+  </head>
+  <body>
+    <h1>Ajouter Chambre</h1>
+    <form action="/addChambre" method="POST">
+      <label for="id_chambre">ID Chambre:</label>
+      <input type="text" id="id_chambre" name="id_chambre" required>
+      <br>
+      <label for="numero_chambre">Numéro de Chambre:</label>
+      <input type="text" id="numero_chambre" name="numero_chambre" required>
+      <br>
+      <label for="prix">Prix:</label>
+      <input type="text" id="prix" name="prix" required>
+      <br>
+      <label for="commodite">Commodité:</label>
+      <input type="text" id="commodite" name="commodite" required>
+      <br>
+      <label for="type_chambre">Type:</label>
+      <select id="type_chambre" name="type_chambre" required>
+        <option value="double">Double</option>
+        <option value="triple">Triple</option>
+        <option value="quadruple">Quadruple</option>
+      </select>
+      <br>
+      <label for="capacite">Capacité:</label>
+      <input type="text" id="capacite" name="capacite" required>
+      <br>
+      <label for="vue">Vue:</label>
+      <select id="vue" name="vue" required>
+        <option value="seaview">Sea View</option>
+        <option value="city">City</option>
+        <option value="park">Park</option>
+      </select>
+      <br>
+      <label for="extention">Extension:</label>
+      <select id="extention" name="extention" required>
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+      <br>
+      <label for="probleme">Problème:</label>
+      <input type="text" id="probleme" name="probleme" required>
+      <br>
+      <label for="id_hotel">ID Hôtel:</label>
+      <select id="id_hotel" name="id_hotel" required>
+        <% for (let i=1; i<=40; i++) { %>
+          <option value="<%= i %>"><%= i %></option>
+        <% } %>
+      </select>
+      <br>
+      <label for="disponible">Disponible:</label>
+      <select id="disponible" name="disponible" required>
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+      <br>
+      <button type="submit">Ajouter Chambre</button>
+    </form>
+  </body>
+</html>
