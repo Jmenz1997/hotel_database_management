@@ -40,6 +40,8 @@ app.post('/chooseDataTable', (req, res) => {
       res.render('table/addHotel');
     }else if (operation === 'delete'){
       res.render ('table/deleteHotel')
+    }else if (operation === 'search'){
+      res.render('table/searchHotel')
     }
     
   } else if (table === 'chaine_hotel' && operation ==='add') {
@@ -75,17 +77,39 @@ app.post('/addHotel', (req, res) => {
       res.status(500).send('Error adding hotel!');
     });
 });
+
 app.post('/deleteHotel', (req, res) => {
   const { id_hotel,nom_chaine,ville } = req.body;
   db.query('DELETE FROM hotel WHERE id_hotel = ? AND nom_chaine = ? AND ville = ?', [id_hotel, nom_chaine, ville])
     .then(() => {
-      res.send('Hotel added successfully!');
+      res.send('Hotel deleted successfully!');
     })
     .catch((error) => {
       console.error(error);
-      res.status(500).send('Error adding hotel!');
+      res.status(500).send('Error deleting hotel!');
     });
 });
+app.post('/searchHotel', (req, res) => {
+  const { nom_chaine, ville } = req.body;
+  db.query('SELECT * FROM hotel WHERE nom_chaine = $1 AND ville = $2', [nom_chaine, ville])
+    .then((result) => {
+      console.log('Query result:', result);
+      if (result.length > 0) {
+        res.render('table/searchResultHotel', { results: result });
+      } else {
+        res.send('No results found');
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error searching for hotels!');
+    });
+});
+
+
+
+
+
 app.post('/addChaineHotel', (req, res) => {
   const { id_chaine, nom_chaine, adresse_chaine, email_chaine } = req.body;
   db.query(`INSERT INTO chaine_hotel(id_chaine, nom_chaine, adresse_chaine, email_chaine) VALUES ($1, $2, $3, $4)`, [id_chaine, nom_chaine, adresse_chaine, email_chaine])
