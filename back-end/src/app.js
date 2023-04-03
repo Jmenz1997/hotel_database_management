@@ -3,7 +3,7 @@ const app = express();
 const ejs = require('ejs');
 const db = require('./config/database');
 const bodyParser = require('body-parser');
-const port = 3003;
+const port = 3002;
 
 // Parse incoming requests with JSON payloads
 app.use(bodyParser.json());
@@ -47,7 +47,11 @@ app.post('/chooseDataTable', (req, res) => {
   } else if (table === 'chaine_hotel' && operation ==='add') {
     res.render('table/addChaineHotel');
   } else if (table === 'chambre'){
-    res.render('table/addChambre');
+    if (operation === "add"){
+      res.render('table/addChambre');
+    }if (operation === "delete"){
+      res.render('table/deleteChambre');
+    }
 
     // Handle error for unknown table
   }else if (table === 'client'){
@@ -60,7 +64,11 @@ app.post('/chooseDataTable', (req, res) => {
 
     // Handle error for unknown table
   }else if (table === 'employe'){
-    res.render('table/addEmployee');
+    if (operation === "add"){
+      res.render('table/addEmployee');
+    }if (operation === "delete"){
+      res.render('table/deleteEmployee');
+    }
 
     // Handle error for unknown table
   }
@@ -132,6 +140,17 @@ app.post('/addChambre', (req, res) => {
       res.status(500).send('Error adding room!');
     });
 });
+app.post('/deleteChambre', (req, res) => {
+  const { nom_complet} = req.body;
+  db.query('DELETE FROM  chambre WHERE id_chambre = ? ', [nom_complet])
+    .then(() => {
+      res.send('Chambre deleted successfully!');
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error deleting Chambre!');
+    });
+});
 app.post('/addClient', (req, res) => {
   const { id_client, nom_complet, nas, adresse, tel, date_enregistrement, id_hotel } = req.body;
   db.query(`INSERT INTO client( id_client, nom_complet, nas, adresse, tel, date_enregistrement, id_hotel) VALUES ($1, $2, $3, $4, $5, $6 ,$7)`, [id_client, nom_complet, nas, adresse, tel, date_enregistrement, id_hotel])
@@ -147,25 +166,35 @@ app.post('/deleteClient', (req, res) => {
   const { nom_complet} = req.body;
   db.query('DELETE FROM  client WHERE nom_complet = ? ', [nom_complet])
     .then(() => {
-      res.send('CLIENT added successfully!');
+      res.send('CLIENT deleted successfully!');
     })
     .catch((error) => {
       console.error(error);
-      res.status(500).send('Error adding client!');
+      res.status(500).send('Error deleting client!');
     });
 });
 app.post('/addEmployee', (req, res) => {
   const { id_employe, nom_complet, adresse, nas, role, id_hotel } = req.body;
-  db.query(`INSERT INTO client( id_employe, nom_complet, adresse, nas, role, id_hotel) VALUES ($1, $2, $3, $4, $5, $6)`, [id_employe, nom_complet, adresse, nas, role, id_hotel])
+  db.query(`INSERT INTO employe( id_employe, nom_complet, adresse, nas, role, id_hotel) VALUES ($1, $2, $3, $4, $5, $6)`, [id_employe, nom_complet, adresse, nas, role, id_hotel])
     .then(() => {
-      res.send('Client added successfully!');
+      res.send('Employee added successfully!');
     })
     .catch((error) => {
       console.error(error);
-      res.status(500).send('Error adding client!');
+      res.status(500).send('Error adding employee!');
     });
 });
-
+app.post('/deleteEmployee', (req, res) => {
+  const { nom_complet} = req.body;
+  db.query('DELETE FROM  employee WHERE nom_complet = ? ', [nom_complet])
+    .then(() => {
+      res.send('Employee deleted successfully!');
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error deleting Employee!');
+    });
+});
 
 
 
