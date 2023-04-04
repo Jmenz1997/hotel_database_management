@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Page</title>
+</head>
+<body>
+  <h1>Filter Rooms</h1>
+  <form action="/filterRooms" method="POST">
+    <label for="start_date">Start Date:</label>
+    <input type="date" id="start_date" name="start_date" required><br>
+
+    <label for="end_date">End Date:</label>
+    <input type="date" id="end_date" name="end_date" required><br>
+
+    <label for="chaine_hoteliere">Hotel Chain:</label>
+    <input type="text" id="chaine_hoteliere" name="chaine_hoteliere" required><br>
+
+    <label for="categorie_hotel">Hotel Category:</label>
+    <input type="text" id="categorie_hotel" name="categorie_hotel" required><br>
+
+    <label for="nombre_chambres">Minimum Number of Rooms:</label>
+    <input type="number" id="nombre_chambres" name="nombre_chambres" min="1" required><br>
+
+    <label for="prix">Maximum Room Price:</label>
+    <input type="number" id="prix" name="prix" min="0" required><br>
+
+    <button type="submit">Filter</button>
+  </form>
+
+  <div id="filteredRooms">
+    <% if (typeof rooms !== 'undefined' && rooms.length > 0) { %>
+      <h3>Filtered Rooms:</h3>
+      <% rooms.forEach(room => { %>
+        <!-- Display room details here -->
+        <p>Room ID: <%= room.id_chambre %></p>
+        <p>Room Number: <%= room.numero_chambre %></p>
+        <p>Price: <%= room.prix %></p>
+        <p>Type: <%= room.type_chambre %></p>
+        <p>Capacity: <%= room.capacite %></p>
+        <hr>
+      <% }); %>
+    <% } %>
+  </div>
+</body>
+</html>

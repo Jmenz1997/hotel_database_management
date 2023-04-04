@@ -3,7 +3,7 @@ const app = express();
 const ejs = require('ejs');
 const db = require('./config/database');
 const bodyParser = require('body-parser');
-const port = 3002;
+const port = 3005;
 
 // Parse incoming requests with JSON payloads
 app.use(bodyParser.json());
@@ -21,6 +21,44 @@ app.use(express.static('public'));
 app.get('/', (req, res) => {
   res.render('index');
 });
+// Serve the employee page
+app.get('/client', (req, res) => {
+  
+  res.render('client/clientPage');
+});
+app.post('/filterRooms', async (req, res) => {
+  const {
+    start_date,
+    end_date,
+    chaine_hoteliere,
+    categorie_hotel,
+    nombre_chambres,
+    prix
+  } = req.body;
+
+  
+    db.query(`
+      SELECT * FROM chambre c
+      JOIN hotel h ON c.id_hotel = h.id_hotel
+      WHERE h.nom_chaine = $1
+        AND h.category = $2
+        AND h.nombre_chambres >= $3
+        AND c.prix <= $4
+        AND NOT EXISTS (
+          SELECT 1 FROM reservation r
+          WHERE r.id_chambre = c.id_chambre
+            AND (
+              (r.start_date BETWEEN $5 AND $6)
+              OR (r.end_date BETWEEN $5 AND $6)
+              OR ($5 BETWEEN r.start_date AND r.end_date)
+              OR ($6 BETWEEN r.start_date AND r.end_date)
+            )
+        )
+        `, [chaine_hoteliere, categorie_hotel, nombre_chambres, prix, start_date, end_date])
+        .then((result)=> {console.log("Query result:",result);
+        res.render('client/displayFilterRooms',{results:result});})
+});
+
 
 // Serve the employee page
 app.get('/employee', (req, res) => {
