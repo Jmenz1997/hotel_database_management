@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Search Employe Results</title>
+  </head>
+  <body>
+    <h1>Search Employe Results</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Full name</th>
+          <th>Address</th>
+          <th>Nas</th>
+          <th>Role</th>
+          
+          <th>Hotel ID</th>
+          
+        </tr>
+      </thead>
+      <tbody>
+        <% if (results) { %>
+          <% results.forEach(result => { %>
+            <tr>
+              <td><%= result.id_employe %></td>
+              <td><%= result.nom_complet %></td>
+              <td><%= result.adresse %></td>
+              <td><%= result.nas %></td>
+              <td><%= result.role %></td>
+    
+              <td><%= result.id_hotel %></td>
+            </tr>
+          <% }) %>
+        <% } else { %>
+          <tr>
+            <td colspan="8">No results found.</td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </body>
+</html>

@@ -1,0 +1,39 @@
+<form action="/searchChambre" method="POST">
+    <h4>Search chambre: </h4>
+    
+      <br>
+      <label for="nom_chaine">Nom chaine Hotel</label>
+      <select id="nom_chaine" name="nom_chaine" required>
+        <option value="Mariott">Mariott</option>
+        <option value="Hilton">Hilton</option>
+        <option value="Holiday INN">Holiday INN</option>
+        <option value="Ibis">Ibis</option>
+        <option value="Sheraton">Sheraton</option>
+      </select>
+      <br>
+      <label for="ville">Ville</label>
+      <select id="ville" name="ville" required>
+        <option value="Ottawa">Ottawa</option>
+        <option value="Calgary">Calgary</option>
+        <option value="Toronto">Toronto</option>
+        <option value="Vancouver">Vancouver</option>
+        <option value="Montreal">Montreal</option>
+      </select>
+      <br>
+      <label for="type_chambre">Type:</label>
+      <select id="type_chambre" name="type_chambre" required>
+        <option value="double">Double</option>
+        <option value="triple">Triple</option>
+        <option value="quadruple">Quadruple</option>
+      </select>
+      <br>
+      <label for="disponible">Disponible:</label>
+      <select id="disponible" name="disponible" required>
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+      <br>
+      <button type="submit"> Search chambre</button>
+
+      
+</form>
