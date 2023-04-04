@@ -59,7 +59,7 @@ app.post('/chooseDataTable', (req, res) => {
       res.render('table/deleteChambre');
     }else if (operation ==='search'){
       res.render('table/searchChambre');
-    }else if (opearion === 'modify'){
+    }else if (operation === 'modify'){
       res.render('table/modifyChambre');
     }
   }
@@ -135,6 +135,17 @@ app.post('/searchHotel', (req, res) => {
       res.status(500).send('Error searching for hotels!');
     });
 });
+// 
+app.post('/modifyHotel', (req,res) => {
+  const { id_hotel, nombre_chambres, adresse, email, tel, nom_chaine,ville,category } = req.body;
+  db.query('UPDATE hotel SET nombre_chambres= $2, adresse = $3, email = $4, tel = $5, nom_chaine = $6, ville = $7, category = $8 WHERE id_hotel= $1', [id_hotel, nombre_chambres, adresse, email, tel, nom_chaine, ville, category])
+  .then(()=> {
+    res.send('Hotel updated successfully!');
+  }).catch((error)=>{
+    console.error(error);
+    res.status(500).send('Error updating hotel');
+  })
+})
 //
 app.post('/addChaineHotel', (req, res) => {
   const { id_chaine, nom_chaine, adresse_chaine, email_chaine } = req.body;
@@ -196,6 +207,34 @@ app.post('/searchChambre', (req, res) => {
       res.status(500).send('Error searching for chambres!');
     });
 });
+//
+app.post('/modifyChambre', (req, res) => {
+  const { id_chambre, numero_chambre, prix, commodite, type_chambre, capacite, vue, extension, probleme, id_hotel, disponible } = req.body;
+  const queryString = `
+    UPDATE chambre
+    SET numero_chambre = $2,
+        prix = $3,
+        commodite = $4,
+        type_chambre = $5,
+        capacite = $6,
+        vue = $7,
+        extension = $8,
+        probleme = $9,
+        id_hotel = $10,
+        disponible = $11
+    WHERE id_chambre = $1
+  `;
+
+  db.query(queryString, [id_chambre, numero_chambre, prix, commodite, type_chambre, capacite, vue, extension, probleme, id_hotel, disponible])
+    .then(() => {
+      res.send('Chambre updated successfully!');
+    }).catch((error) => {
+      console.error(error);
+      res.status(500).send('Error updating chambre');
+    });
+});
+
+//
 
 app.post('/addClient', (req, res) => {
   const { id_client, nom_complet, nas, adresse, tel, date_enregistrement, id_hotel } = req.body;
@@ -219,6 +258,44 @@ app.post('/deleteClient', (req, res) => {
       res.status(500).send('Error deleting client!');
     });
 });
+app.post('/searchClient', (req, res) => {
+  const { nom_complet} = req.body;
+  db.query('SELECT * FROM client WHERE nom_complet = $1', [nom_complet])
+    .then((result) => {
+      console.log('Query result:', result);
+      if (result.length > 0) {
+        res.render('table/resultClient', { results: result });
+      } else {
+        res.send('No results found');
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error searching for hotels!');
+    });
+});
+// 
+app.post('/modifyClient', (req, res) => {
+  const { id_client, nom_complet, nas, adresse, tel, id_hotel } = req.body;
+  const queryString = `
+    UPDATE client
+    SET nom_complet = $2,
+        nas = $3,
+        adresse = $4,
+        tel = $5,
+        id_hotel = $6
+    WHERE id_client = $1
+  `;
+
+  db.query(queryString, [id_client, nom_complet, nas, adresse, tel, id_hotel])
+    .then(() => {
+      res.send('Client updated successfully!');
+    }).catch((error) => {
+      console.error(error);
+      res.status(500).send('Error updating client');
+    });
+});
+//
 app.post('/addEmployee', (req, res) => {
   const { id_employe, nom_complet, adresse, nas, role, id_hotel } = req.body;
   db.query(`INSERT INTO employe( id_employe, nom_complet, adresse, nas, role, id_hotel) VALUES ($1, $2, $3, $4, $5, $6)`, [id_employe, nom_complet, adresse, nas, role, id_hotel])
@@ -269,6 +346,28 @@ app.post('/searchEmploye', (req, res) => {
       res.status(500).send('Error searching for employes!');
     });
 });
+// 
+app.post('/modifyEmployee', (req, res) => {
+  const { id_employe, nom_complet, adresse, nas, role, id_hotel } = req.body;
+  const queryString = `
+    UPDATE employe
+    SET nom_complet = $2,
+        adresse = $3,
+        nas = $4,
+        role = $5,
+        id_hotel = $6
+    WHERE id_employe = $1
+  `;
+
+  db.query(queryString, [id_employe, nom_complet, adresse, nas, role, id_hotel])
+    .then(() => {
+      res.send('Employee updated successfully!');
+    }).catch((error) => {
+      console.error(error);
+      res.status(500).send('Error updating employee');
+    });
+});
+
 
 
 

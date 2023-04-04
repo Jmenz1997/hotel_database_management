@@ -1,4 +1,4 @@
-<form action="/addClient" method="POST">
+<form action="/modifyClient" method="POST">
     <label for="id_client">id_client:</label>
     <input type="number" id="id_client" name="id_client" required>
     <br>
@@ -14,8 +14,6 @@
     <label for="tel">Tel:</label>
     <input type="number" id="tel" name="tel" required>
     <br>
-    <input type="date" id="date_enregistrement" name="date_enregistrement" required>
-    <br>
       <label for="id_hotel">ID Hôtel:</label>
       <select id="id_hotel" name="id_hotel" required>
         <% for (let i=1; i<=40; i++) { %>
@@ -23,13 +21,6 @@
         <% } %>
       </select>
       <br>
-    <button type="submit">Add Client</button>
+    <button type="submit">Modify Client</button>
   </form>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const dateEnregistrementInput = document.getElementById('date_enregistrement');
-      const currentDate = new Date().toISOString().substr(0, 10);
-      dateEnregistrementInput.value = currentDate;
-    });
-  </script>
-  
+ 
