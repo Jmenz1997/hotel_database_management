@@ -5,45 +5,54 @@
   </head>
   <body>
     <h1>Search Results</h1>
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Room number</th>
-          <th>Price</th>
-          <th>Commodity</th>
-          <th>Room type</th>
-          <th>Capacity</th>
-          <th>View</th>
-          <th>Extension</th>
-          <th>Problem</th>
-          <th>Hotel ID</th>
-          <th>Disponibility</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% if (results) { %>
-          <% results.forEach(result => { %>
-            <tr>
-              <td><%= result.id_chambre %></td>
-              <td><%= result.numero_chambre %></td>
-              <td><%= result.prix %></td>
-              <td><%= result.commodite %></td>
-              <td><%= result.type_chambre %></td>
-              <td><%= result.capacite %></td>
-              <td><%= result.vue %></td>
-              <td><%= result.extension %></td>
-              <td><%= result.probleme %></td>
-              <td><%= result.id_hotel %></td>
-              <td><%= result.disponible %></td>
-            </tr>
-          <% }) %>
-        <% } else { %>
+    <form action="/registerClient" method="POST">
+      <table>
+        <thead>
           <tr>
-            <td colspan="8">No results found.</td>
+            <th>ID</th>
+            <th>Room number</th>
+            <th>Price</th>
+            <th>Commodity</th>
+            <th>Room type</th>
+            <th>Capacity</th>
+            <th>View</th>
+            <th>Extension</th>
+            <th>Problem</th>
+            <th>Hotel ID</th>
+            <th>Disponibility</th>
+            <th>Select</th>
           </tr>
-        <% } %>
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          <% if (results) { %>
+            <% results.forEach(result => { %>
+              <tr>
+                <td><%= result.id_chambre %></td>
+                <td><%= result.numero_chambre %></td>
+                <td><%= result.prix %></td>
+                <td><%= result.commodite %></td>
+                <td><%= result.type_chambre %></td>
+                <td><%= result.capacite %></td>
+                <td><%= result.vue %></td>
+                <td><%= result.extension %></td>
+                <td><%= result.probleme %></td>
+                <td><%= result.id_hotel %></td>
+                <td><%= result.disponible %></td>
+                <td><input type="checkbox" name="id_chambre" id="id_chambre" value="<%= result.id_chambre %>"></td>
+              </tr>
+            <% }) %>
+            <tr>
+              <td colspan="12">
+                <button type="submit">confirme selection</button>
+              </td>
+            </tr>
+          <% } else { %>
+            <tr>
+              <td colspan="12">No results found.</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </form>
   </body>
 </html>

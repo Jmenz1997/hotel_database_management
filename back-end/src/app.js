@@ -3,6 +3,8 @@ const app = express();
 const ejs = require('ejs');
 const db = require('./config/database');
 const bodyParser = require('body-parser');
+const { v4: uuidv4 } = require('uuid');
+
 const port = 3005;
 
 // Parse incoming requests with JSON payloads
@@ -58,6 +60,55 @@ app.post('/filterRooms', async (req, res) => {
         .then((result)=> {console.log("Query result:",result);
         res.render('client/displayFilterRooms',{results:result});})
 });
+app.post('/registerClient', (req, res) => {
+  const {id_chambre} = req.body;
+  
+  
+  const query = `
+    SELECT hotel.id_hotel
+    FROM chambre
+    JOIN hotel ON chambre.id_hotel = hotel.id_hotel
+    WHERE chambre.id_chambre = $1
+  `;
+
+  db.query(query,[id_chambre])
+  .then((result) => {
+    
+    if (result.length > 0) {
+      const id_hotel = result[0].id_hotel;
+      res.render('client/registerClient', { id_chambre, id_hotel });
+      
+    } else {
+      res.send('No id_chambre');
+    }
+  })
+  .catch((error) => {
+    console.error(error);
+    res.status(500).send('Error searching for chambres!');
+  });
+    
+  
+});
+
+//SUBMIT REGISTRATION AND RESERVATION
+app.post('/submitRegistration', (req, res) => {
+  const { nom_complet, nas, adresse, tel,  id_hotel } = req.body;
+
+  const id_client = parseInt(Math.random() * 10000);
+
+  const date_enregistrement = new Date().toISOString().substr(0, 10);;
+
+  db.query(`INSERT INTO client( id_client, nom_complet, nas, adresse, tel, date_enregistrement, id_hotel) VALUES ($1, $2, $3, $4, $5, $6 ,$7)`, [id_client, nom_complet, nas, adresse, tel, date_enregistrement, parseInt(id_hotel)])
+    .then(() => {
+      res.send('Client registred successfully!');
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error adding client!');
+    });
+});
+
+
 
 
 // Serve the employee page
