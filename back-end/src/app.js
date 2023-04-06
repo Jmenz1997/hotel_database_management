@@ -5,7 +5,7 @@ const db = require('./config/database');
 const bodyParser = require('body-parser');
 const { v4: uuidv4 } = require('uuid');
 
-const port = 3005;
+const port = 3007;
 
 // Parse incoming requests with JSON payloads
 app.use(bodyParser.json());
@@ -58,10 +58,15 @@ app.post('/filterRooms', async (req, res) => {
         )
         `, [chaine_hoteliere, categorie_hotel, nombre_chambres, prix, start_date, end_date])
         .then((result)=> {console.log("Query result:",result);
-        res.render('client/displayFilterRooms',{results:result});})
+        res.render('client/displayFilterRooms',{results:result,
+          start_date,
+          end_date,
+        
+        });})
 });
 app.post('/registerClient', (req, res) => {
-  const {id_chambre} = req.body;
+  const {id_chambre,start_date,end_date} = req.body;
+  
   
   
   const query = `
@@ -76,7 +81,7 @@ app.post('/registerClient', (req, res) => {
     
     if (result.length > 0) {
       const id_hotel = result[0].id_hotel;
-      res.render('client/registerClient', { id_chambre, id_hotel });
+      res.render('client/registerClient', { id_chambre, id_hotel,start_date,end_date });
       
     } else {
       res.send('No id_chambre');
@@ -90,21 +95,35 @@ app.post('/registerClient', (req, res) => {
   
 });
 
+
+
+
 //SUBMIT REGISTRATION AND RESERVATION
 app.post('/submitRegistration', (req, res) => {
-  const { nom_complet, nas, adresse, tel,  id_hotel } = req.body;
+  const { nom_complet, nas, adresse, tel,  id_hotel , id_chambre, start_date,end_date} = req.body;
 
   const id_client = parseInt(Math.random() * 10000);
 
   const date_enregistrement = new Date().toISOString().substr(0, 10);;
 
+
+  const id_reservation = Math.floor(Math.random() * 1000000); // Generate random id_reservation
+
+
+  
+  
   db.query(`INSERT INTO client( id_client, nom_complet, nas, adresse, tel, date_enregistrement, id_hotel) VALUES ($1, $2, $3, $4, $5, $6 ,$7)`, [id_client, nom_complet, nas, adresse, tel, date_enregistrement, parseInt(id_hotel)])
     .then(() => {
-      res.send('Client registred successfully!');
+      db.query(
+        `INSERT INTO reservation (id_reservation, nom_complet, id_chambre, id_client, start_date, end_date, id_hotel)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [id_reservation, nom_complet, parseInt(id_chambre), id_client, start_date, end_date, parseInt(id_hotel)]
+      );
+      res.send('Client registred  and reservation confirmed successfully!');
     })
     .catch((error) => {
       console.error(error);
-      res.status(500).send('Error adding client!');
+      res.status(500).send('Error adding client!',s);
     });
 });
 

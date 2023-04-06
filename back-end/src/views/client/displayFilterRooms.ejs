@@ -39,8 +39,12 @@
                 <td><%= result.id_hotel %></td>
                 <td><%= result.disponible %></td>
                 <td><input type="checkbox" name="id_chambre" id="id_chambre" value="<%= result.id_chambre %>"></td>
+                
               </tr>
             <% }) %>
+                <input type="hidden" name="start_date" id="start_date" value="<%= start_date %>">
+                <input type="hidden" name="end_date" id="end_date" value="<%= end_date %>">
+              </tr>
             <tr>
               <td colspan="12">
                 <button type="submit">confirme selection</button>
