@@ -118,7 +118,20 @@ app.post('/submitRegistration', (req, res) => {
         `INSERT INTO reservation (id_reservation, nom_complet, id_chambre, id_client, start_date, end_date, id_hotel)
          VALUES ($1, $2, $3, $4, $5, $6, $7)`,
         [id_reservation, nom_complet, parseInt(id_chambre), id_client, start_date, end_date, parseInt(id_hotel)]
-      );
+      )
+      .then(() => {
+            const archive_id = parseInt(Math.random() * 10000);
+            const date_archivage = new Date().toISOString().substr(0, 10);
+            
+            const type='Reservation';
+            db.query(`INSERT INTO archive (archive_id, date_archivage,type,id_reservation,location_id)
+            VALUES ($1, $2, $3, $4, $5)`,
+           [archive_id,date_archivage,type,id_reservation,null])
+          })
+          .catch((error) => {
+            console.error(error);
+            res.status(500).send('Error adding record to archive');
+          });
       res.send('Client registred  and reservation confirmed successfully!');
     })
     .catch((error) => {
@@ -138,6 +151,105 @@ app.get('/employee', (req, res) => {
 app.post('/chooseTable', (req, res) => {
   res.render('table/listeTable');
 });
+app.post('/makeLocation', (req,res) => {
+  res.render('employe/locationInformationForm',{results:null});
+} );
+app.post('/filterRoomsEmploye', async (req, res) => {
+  const {
+    start_date,
+    end_date,
+    chaine_hoteliere,
+    categorie_hotel,
+    nombre_chambres,
+    prix
+  } = req.body;
+
+  
+    db.query(`
+      SELECT * FROM chambre c
+      JOIN hotel h ON c.id_hotel = h.id_hotel
+      WHERE h.nom_chaine = $1
+        AND h.category = $2
+        AND h.nombre_chambres >= $3
+        AND c.prix <= $4
+        AND NOT EXISTS (
+          SELECT 1 FROM reservation r
+          WHERE r.id_chambre = c.id_chambre
+            AND (
+              (r.start_date BETWEEN $5 AND $6)
+              OR (r.end_date BETWEEN $5 AND $6)
+              OR ($5 BETWEEN r.start_date AND r.end_date)
+              OR ($6 BETWEEN r.start_date AND r.end_date)
+            )
+        )
+        `, [chaine_hoteliere, categorie_hotel, nombre_chambres, prix, start_date, end_date])
+        .then((result)=> {console.log("Query result:",result);
+        res.render('employe/locationInformationForm',{results: result,
+          start_date,
+          end_date,
+        
+        });
+      })
+});
+app.post('/submitLocation', (req, res) => {
+  const { nom_complet, nas, adresse, tel, id_chambre, start_date,end_date,id_employe} = req.body;
+  
+  const id_client = parseInt(Math.random() * 10000);
+  const query = `
+    SELECT hotel.id_hotel
+    FROM chambre
+    JOIN hotel ON chambre.id_hotel = hotel.id_hotel
+    WHERE chambre.id_chambre = $1
+  `;
+
+  db.query(query,[id_chambre])
+  .then((result) => {
+    let id_hotel = null;
+    if (result.length > 0) {
+      id_hotel = result[0].id_hotel;
+
+      const date_location = new Date().toISOString().substr(0, 10);
+      const date_enregistrement = new Date().toISOString().substr(0, 10);
+      const location_id = Math.floor(Math.random() * 1000000); // Generate random id_reservation
+
+      db.query(`INSERT INTO client( id_client, nom_complet, nas, adresse, tel, date_enregistrement, id_hotel) VALUES ($1, $2, $3, $4, $5, $6 ,$7)`, [id_client, nom_complet, nas, adresse, tel, date_enregistrement, parseInt(id_hotel)])
+        .then(() => {
+          db.query(
+            `INSERT INTO location (location_id, id_client,id_hotel,date_location ,date_debut, date_fin, id_chambre,id_employe)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+            [location_id, id_client, parseInt(id_hotel),date_location, start_date, end_date, parseInt(id_chambre),parseInt(id_employe)]
+          )
+          .then(() => {
+            const archive_id = parseInt(Math.random() * 10000);
+            const date_archivage = new Date().toISOString().substr(0, 10);
+            
+            const type='Location';
+            db.query(`INSERT INTO archive (archive_id, date_archivage,type,id_reservation,location_id)
+            VALUES ($1, $2, $3, $4, $5)`,
+           [archive_id,date_archivage,type,null,location_id])
+          })
+          .catch((error) => {
+            console.error(error);
+            res.status(500).send('Error adding record to archive');
+          });
+          res.send('Client registred  and location confirmed successfully!');
+        })
+        .catch((error) => {
+          console.error(error);
+          res.status(500).send('Error adding client!');
+        });
+    }
+    else {
+      res.status(404).send('No hotel found for the given chambre ID');
+    }
+  })
+  .catch((error) => {
+    console.error(error);
+    res.status(500).send('Error getting hotel ID!');
+  });
+});
+
+
 
 // Handle form submission for adding, deleting, search and modify data to a table
 app.post('/chooseDataTable', (req, res) => {
