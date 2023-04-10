@@ -1,0 +1,116 @@
+<!--'Location FORM where the employe enter the information to make a location for the client' -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Make location Page</title>
+</head>
+<body>
+  <h1>Filter Rooms</h1>
+  <form action="/filterRoomsEmploye" method="POST">
+    <label for="start_date">Start Date:</label>
+    <input type="date" id="start_date" name="start_date" required><br>
+
+    <label for="end_date">End Date:</label>
+    <input type="date" id="end_date" name="end_date" required><br>
+
+    <label for="chaine_hoteliere">Hotel Chain:</label>
+    <input type="text" id="chaine_hoteliere" name="chaine_hoteliere" required><br>
+
+    <label for="categorie_hotel">Hotel Category:</label>
+    <input type="text" id="categorie_hotel" name="categorie_hotel" required><br>
+
+    <label for="nombre_chambres">Minimum Number of Rooms:</label>
+    <input type="number" id="nombre_chambres" name="nombre_chambres" min="1" required><br>
+
+    <label for="prix">Maximum Room Price:</label>
+    <input type="number" id="prix" name="prix" min="0" required><br>
+
+    <button type="submit">Filter</button>
+    <% if (typeof start_date !== 'undefined' && typeof end_date !== 'undefined') { %>
+      <input type="hidden" name="start_date" id="start_date" value="<%= start_date %>">
+      <input type="hidden" name="end_date" id="end_date" value="<%= end_date %>">
+  <% } %>
+  </form>
+  <h2>Filtered Rooms</h2>
+  <form action="/submitLocation" method="POST">
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Room number</th>
+        <th>Price</th>
+        <th>Commodity</th>
+        <th>Room type</th>
+        <th>Capacity</th>
+        <th>View</th>
+        <th>Extension</th>
+        <th>Problem</th>
+        <th>Hotel ID</th>
+        <th>Disponibility</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+      <% if (results ) { %>
+        <% results.forEach(result => { %>
+          <tr>
+            <td><%= result.id_chambre %></td>
+            <td><%= result.numero_chambre %></td>
+            <td><%= result.prix %></td>
+            <td><%= result.commodite %></td>
+            <td><%= result.type_chambre %></td>
+            <td><%= result.capacite %></td>
+            <td><%= result.vue %></td>
+            <td><%= result.extension %></td>
+            <td><%= result.probleme %></td>
+            <td><%= result.id_hotel %></td>
+            <td><%= result.disponible %></td>
+            <td><input type="checkbox" name="id_chambre" id="id_chambre" value="<%= result.id_chambre %>"></td>
+          </tr>
+        <% }); %>
+              <input type="hidden" name="start_date" id="start_date" value="<%= start_date %>">
+              <input type="hidden" name="end_date" id="end_date" value="<%= end_date %>">
+            
+              
+        
+    <% } else { %>
+      <tr>
+        <td colspan="11">No results found.</td>
+      </tr>
+    <% } %>
+  </tbody>
+</table>
+<form>
+  <h1>Register Client : </h1>
+  <label for="nom_complet">Full Name:</label>
+  <input type="text" id="nom_complet" name="nom_complet" required><br><br>
+
+  <label for="nas">NAS:</label>
+  <input type="text" name="nas" id="nas" required><br><br>
+
+  <label for="addresse">Address:</label>
+  <input type="text" id="adresse" name="adresse" required><br><br>
+
+  <label for="tel">Telephone Number:</label>
+  <input type="number" id="tel" name="tel" required><br><br>
+
+  <label for="id_employe">ID Employe:</label>
+  <select id="id_employe" name="id_employe" required>
+    <% for (let i=1; i<=200; i++) { %>
+      <option value="<%= i %>"><%= i %></option>
+    <% } %>
+  </select>
+  
+  <td colspan="12">
+    <button type="submit">Confirme Location & registration</button>
+  </td>
+</form>
+</form>
+
+
+  
+</body>
+</html>
