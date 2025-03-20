@@ -28,11 +28,11 @@ Avant de démarrer, assurez-vous d'avoir installé :
 3. Installer les dépendances :
 **npm install**
 
-### **3 Exécution du serveur**
+### **3️⃣ Exécution du serveur**
 1. Lancer l’application en exécutant :
    **node app.js**
-### **Accéder à l’application**
+### **4️⃣ Accéder à l’application**
 **http://localhost:3000**
 
-
+🙏 Merci !
 
